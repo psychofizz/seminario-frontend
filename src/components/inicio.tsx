@@ -4,7 +4,7 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "./ui/button";
-import { DoorClosed, LogIn } from "lucide-react";
+import { LogIn } from "lucide-react";
 
 export default function Inicio() {
   return (
@@ -16,7 +16,9 @@ export default function Inicio() {
           <Link href="/login">
             <button className="bg-sky-800 text-white px-4 py-2 rounded hover:bg-sky-900 transition duration-300 cursor-pointer">
               <div className="flex flex-row">
+                <div className="px-3">
                 Acceder
+                </div>
                 <LogIn />
               </div>
             </button>
@@ -30,8 +32,8 @@ export default function Inicio() {
             <Image
               src="https://campusvirtual.unah.edu.hn/pluginfile.php/1/core_admin/logo/0x200/1738566175/thumbnail_logo-02.png"
               alt="UNAH Logo"
-              width={200}
-              height={200}
+              width={190}
+              height={190}
               className="mx-auto text-white bg-white p-6 border border-r-2 rounded-sm"
             />
           </div>
@@ -55,7 +57,7 @@ export default function Inicio() {
               </Button>
             </div>
             <div className="pt-4">
-              <Button className="my-2 mr-2 ml-2" variant="outline">
+              <Button className="my-2 mr-2 ml-2 hover:bg-amber-50 cursor-pointer" variant="outline">
                 <p className="text-sm font-medium">ACCEDER CAMPUS HISTÓRICO</p>
               </Button>
             </div>

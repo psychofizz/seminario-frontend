@@ -24,7 +24,7 @@ export default function LoginPage() {
 
       <div className="md:w-1/2 w-full pt-12 flex justify-center items-center relative">
         <div className="w-full max-w-[400px] space-y-6">
-          {/* Logo and Header */}
+          {/* Logo y nav */}
           <div className="text-center space-y-2">
             <Image
             src="https://campusvirtual.unah.edu.hn/pluginfile.php/1/core_admin/logo/0x200/1738566175/thumbnail_logo-02.png"
@@ -35,7 +35,7 @@ export default function LoginPage() {
           />
           </div>
 
-          {/* Login Card */}
+          {/* Formulario*/}
           <Card className="p-6 shadow-lg">
             <form className="space-y-4">
               <div className="space-y-2">
@@ -85,7 +85,6 @@ export default function LoginPage() {
             </div>
           </Card>
 
-          {/* Help Section */}
           <div className="text-center space-y-2">
             <p className="text-sm text-gray-600">
               Para acceder al campus virtual utilice su cuenta institucional
