@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  web:
+    container_name: nextjs-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"  # Expone el puerto 3000 del contenedor en el puerto 3000 del host
+    environment:
+      - NODE_ENV=production  # Ejecuta en modo producción
+    volumes:
+      - /app/node_modules  # Evita sobrescribir node_modules en el contenedor

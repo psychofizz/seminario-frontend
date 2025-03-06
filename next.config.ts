@@ -6,8 +6,10 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'campusvirtual.unah.edu.hn',
+        
       },
     ],
+    unoptimized: true,
   },
 };
 
