@@ -1,43 +1,61 @@
-"use client";
 
-// import { useState } from "react";
+"use client";  // Asegúrate de que sea un componente de cliente
+
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Lock, User } from "lucide-react";
-import Image from 'next/image';
+import Image from "next/image";
+import { useRouter } from "next/navigation";  
+import { login } from "../api/graphql/api";  // Importar la función de login
 
-export default function LoginPage() {
+export default function LoginPageComponent() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();  // Usar useRouter desde next/navigation
+
+  const handleLogin = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    try {
+      const user = await login(username, password);
+      if (user) {
+        router.push("/cursos");
+      }
+    } catch {
+      setError("Credenciales incorrectas, por favor intente nuevamente.");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#f5f5f5] flex flex-row">
       <div className="hidden md:flex w-1/2 bg-slate-200">
-            <Image
-            src="https://campusvirtual.unah.edu.hn/pluginfile.php/1/theme_space/loginbg/1738566175/login_bg.jpg"
-            alt="UNAH Logo"
-            width={2000}
-            height={2000}
-            className="mx-auto"
-          />         
+        <Image
+          src="https://campusvirtual.unah.edu.hn/pluginfile.php/1/theme_space/loginbg/1738566175/login_bg.jpg"
+          alt="UNAH Logo"
+          width={2000}
+          height={2000}
+          className="mx-auto"
+        />
       </div>
 
       <div className="md:w-1/2 w-full pt-12 flex justify-center items-center relative">
         <div className="w-full max-w-[400px] space-y-6">
-          {/* Logo y nav */}
           <div className="text-center space-y-2">
             <Image
-            src="https://campusvirtual.unah.edu.hn/pluginfile.php/1/core_admin/logo/0x200/1738566175/thumbnail_logo-02.png"
-            alt="UNAH Logo"
-            width={140}
-            height={140}
-            className="mx-auto"
-          />
+              src="https://campusvirtual.unah.edu.hn/pluginfile.php/1/core_admin/logo/0x200/1738566175/thumbnail_logo-02.png"
+              alt="UNAH Logo"
+              width={140}
+              height={140}
+              className="mx-auto"
+            />
           </div>
 
-          {/* Formulario*/}
           <Card className="p-6 shadow-lg">
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={handleLogin}>
               <div className="space-y-2">
                 <Label htmlFor="account" className="text-sm font-medium">
                   Nombre de usuario
@@ -48,6 +66,8 @@ export default function LoginPage() {
                     type="text"
                     className="pl-10"
                     placeholder="Ingrese su cuenta"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     required
                   />
                   <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
@@ -64,6 +84,8 @@ export default function LoginPage() {
                     type="password"
                     className="pl-10"
                     placeholder="Ingrese su contraseña"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     required
                   />
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
@@ -78,9 +100,11 @@ export default function LoginPage() {
               </Button>
             </form>
 
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+
             <div className="mt-4 text-center">
               <a href="#" className="text-sm text-blue-600 hover:underline">
-                ¿Olvidó su nombre de usuario o contraseña?
+                ¿Olvidó contraseña?
               </a>
             </div>
           </Card>

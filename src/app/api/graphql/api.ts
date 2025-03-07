@@ -49,3 +49,32 @@ export const getUserEnrollments = async (userId: number) => {
     throw error;
   }
 };
+
+export const LOGIN_MUTATION = gql`
+mutation login($email: String!, $password: String!) {
+  login(email: $email, password: $password) {
+    id
+    username
+    firstname
+    lastname
+    email
+    confirmed
+    deleted
+    suspended
+  }
+}
+`;
+
+export const login = async (email: string, password: string) => {
+  try {
+    const { data } = await client.mutate({
+      mutation: LOGIN_MUTATION,
+      variables: { email, password },
+    });
+    return data.login;
+  } catch (error) {
+    console.error('Error logging in:', error);
+    throw error;
+  }
+};
+
