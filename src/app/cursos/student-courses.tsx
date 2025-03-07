@@ -125,7 +125,7 @@ export default function StudentCourses({ userId }: StudentCoursesProps) {
         </Button>
       </div>
 
-      <Tabs defaultValue="all" className="w-full" onValueChange={(value) => setFilter(value as any)}>
+      <Tabs defaultValue="all" className="w-full" onValueChange={(value) => setFilter(value as 'all' | 'active' | 'completed')}>
         <TabsList className="grid grid-cols-3 mb-4">
           <TabsTrigger value="all">Todos</TabsTrigger>
           <TabsTrigger value="active">Activos</TabsTrigger>

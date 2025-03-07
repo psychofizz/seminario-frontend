@@ -25,7 +25,7 @@ WORKDIR /app
 # Copia los archivos necesarios desde la etapa de construcción
 COPY --from=builder /app/package*.json ./
 COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
+# COPY --from=builder /app/public ./public
 COPY --from=builder /app/node_modules ./node_modules
 
 # Expone el puerto en el que se ejecutará la aplicación

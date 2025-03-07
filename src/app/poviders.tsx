@@ -18,25 +18,25 @@ export function ApolloProvider({ children }: PropsWithChildren) {
   });
 
   // HTTP link para conectar a tu backend - Importante: notar el /graphql al final
-  const httpLink = new HttpLink({
-    uri: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/graphql',
-    credentials: 'same-origin'
-  });
-
   // Crear el cliente Apollo usando useMemo para evitar recreaciones innecesarias
   const client = useMemo(() => {
+    const httpLink = new HttpLink({
+      uri: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/graphql',
+      credentials: 'same-origin'
+    });
+
     return new ApolloClient({
       link: from([errorLink, httpLink]),
       cache: new InMemoryCache(),
       connectToDevTools: process.env.NODE_ENV !== 'production',
       defaultOptions: {
         query: {
-          fetchPolicy: 'cache-and-network',
+          fetchPolicy: 'cache-first',
           errorPolicy: 'all',
         },
       },
     });
-  }, []);
+  }, [errorLink]);
 
   return <Provider client={client}>{children}</Provider>;
 }

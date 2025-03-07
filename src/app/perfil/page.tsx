@@ -53,10 +53,10 @@ export default function ProfilePage() {
               </h1>
             </div>
             <div className="flex items-center space-x-4">
-              <button className="p-2 hover:bg-[#002347] rounded-full">
+              <button className="p-2 hover:bg-[#002347] rounded-full" title="Notificaciones">
                 <Bell className="h-5 w-5" />
               </button>
-              <button className="p-2 hover:bg-[#002347] rounded-full">
+              <button className="p-2 hover:bg-[#002347] rounded-full" title="Mensajes">
                 <MessageSquare className="h-5 w-5" />
               </button>
               <Avatar className="h-8 w-8">
