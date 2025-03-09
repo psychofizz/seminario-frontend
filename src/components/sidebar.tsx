@@ -3,6 +3,27 @@
 import { X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "./ui/accordion";
+import { gql, useQuery } from '@apollo/client';
+import { UserEnrollmentsResponse, UserEnrollmentsVars } from '@/app/types';
+import { Button } from "./ui/button";
+
+const GET_USER_ENROLLMENTS = gql`
+  query GetUserEnrollments($userId: Int!) {
+    userEnrollments(userId: $userId) {
+      id
+      course {
+        id
+        fullname
+      }
+    }
+  }
+`;
 
 interface SidebarProps {
   isMenuOpen: boolean;
@@ -11,6 +32,17 @@ interface SidebarProps {
 
 export default function Sidebar({ isMenuOpen, toggleMenu }: SidebarProps) {
   const pathname = usePathname();
+  const userId = 1; // ID del usuario logueado (para pruebas)
+
+  const { data, loading, error, refetch } = useQuery<UserEnrollmentsResponse, UserEnrollmentsVars>(
+    GET_USER_ENROLLMENTS,
+    {
+      variables: { userId },
+      fetchPolicy: 'cache-and-network', // Usar caché pero actualizar en segundo plano
+      nextFetchPolicy: 'cache-first',
+    }
+  );
+
   const pages = [
     { ruta: "Area Personal", href: "/perfil", current: true },
     { ruta: "Pagina Principal del Sitio", href: "/", current: false },
@@ -47,6 +79,31 @@ export default function Sidebar({ isMenuOpen, toggleMenu }: SidebarProps) {
               {vista.ruta}
             </Link>
           ))}
+          <Accordion className="p-4" type="single" collapsible>
+            <AccordionItem value="item-1">
+              <AccordionTrigger className="cursor-pointer">Mis Cursos</AccordionTrigger>
+              <AccordionContent>
+                {loading && <div className="flex justify-center p-8">Cargando cursos...</div>}
+                {error && (
+                  <div className="text-red-500 p-4 bg-red-50 rounded-md">
+                    Error al cargar los cursos: {error.message}
+                    <Button 
+                      variant="outline" 
+                      className="mt-2" 
+                      onClick={() => refetch()}
+                    >
+                      Reintentar
+                    </Button>
+                  </div>
+                )}
+                {data?.userEnrollments?.map((enrollment) => (
+                  <div key={enrollment.id} className="p-2">
+                    {enrollment.course.fullname}
+                  </div>
+                ))}
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
       </nav>
     </div>

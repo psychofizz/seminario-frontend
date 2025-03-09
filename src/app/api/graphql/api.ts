@@ -78,3 +78,43 @@ export const login = async (email: string, password: string) => {
   }
 };
 
+export const GET_CURSO_ASIGNACIONES = gql`
+  query GetUserEnrollments($userId: Int!) {
+    userEnrollments(userId: $userId) {
+      id
+      enrolid
+      userid
+      courseid
+      status
+      timestart
+      timeend
+      timecreated
+      timemodified
+      course {
+        id
+        fullname
+        shortname
+        summary
+        visible
+        startdate
+        enddate
+        format
+      }
+    }
+  }
+`;
+
+// Función para obtener las inscripciones de un usuario
+export const getCursoASignaciones = async (userId: number) => {
+  try {
+    const { data } = await client.query<UserEnrollmentsResponse, UserEnrollmentsVars>({
+      query: GET_CURSO_ASIGNACIONES,
+      variables: { userId },
+      fetchPolicy: 'network-only', // Para obtener datos actualizados
+    });
+    return data.userEnrollments;
+  } catch (error) {
+    console.error('Error fetching user enrollments:', error);
+    throw error;
+  }
+};

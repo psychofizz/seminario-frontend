@@ -7,7 +7,7 @@ import React from "react";
 export default function MenuCurso() {
   return (
     <>
-      <div className="w-4/5 p-8 bg-amber-100">
+      <div className="w-4/5 p-8">
         <div className="pb-10 max-w-max" id="navegacion">
           <div className="md:col-span-9">
             <Tabs defaultValue="cursos" className="w-full">
@@ -18,7 +18,7 @@ export default function MenuCurso() {
                 <TabsTrigger value="MisCursos" className="flex items-center">
                   Mis Cursos
                 </TabsTrigger>
-                <TabsTrigger value="inicio" className="flex items-center">
+                <TabsTrigger value="curso" className="flex items-center">
                   <Link className="hover:underline" href="/cursos">Curso</Link>
                 </TabsTrigger>
                 <TabsTrigger value="unidad1" className="flex items-center">

@@ -18,7 +18,7 @@ export function DetalleCursoCLient() {
       <Sidebar isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
       <div className='flex flex-row'>
       <main
-        className={`container w-full flex flex-row pl-10 py-16 transition-all duration-300 ${
+        className={`container w-full flex flex-row justify-end py-16 ml-64 transition-all duration-300 ${
           isMenuOpen ? "ml-64 w-[calc(100%-16rem)]" : "ml-0 w-full"
         }`}
       >
