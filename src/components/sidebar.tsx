@@ -3,11 +3,14 @@
 import { X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 
-export default function Sidebar() {
+interface SidebarProps {
+  isMenuOpen: boolean;
+  toggleMenu: () => void;
+}
+
+export default function Sidebar({ isMenuOpen, toggleMenu }: SidebarProps) {
   const pathname = usePathname();
-  const [isMenuOpen, setIsMenuOpen] = useState(true);
   const pages = [
     { ruta: "Area Personal", href: "/perfil", current: true },
     { ruta: "Pagina Principal del Sitio", href: "/", current: false },
@@ -24,7 +27,7 @@ export default function Sidebar() {
       <nav className="p-4">
         <div
           className="flex justify-end mb-4 cursor-pointer"
-          onClick={() => setIsMenuOpen(false)}
+          onClick={toggleMenu}
         >
           <X className="h-8 w-8" />
           <span className="sr-only">Close</span>

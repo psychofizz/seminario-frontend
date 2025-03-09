@@ -1,0 +1,32 @@
+'use client'
+import MenuCurso from './menu-curso'
+import ActividadesProximas from './activ-prox'
+import Navbar from "@/components/navbar";
+import Sidebar from "@/components/sidebar";
+import { useState } from "react";
+
+export function DetalleCursoCLient() {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+    const toggleMenu = () => {
+      setIsMenuOpen(!isMenuOpen);
+    };
+
+  return (
+    <div className='min-h-screen w-full overflow-x-hidden'>
+        <Navbar isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
+      <Sidebar isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
+      <div className='flex flex-row'>
+      <main
+        className={`container w-full flex flex-row pl-10 py-16 transition-all duration-300 ${
+          isMenuOpen ? "ml-64 w-[calc(100%-16rem)]" : "ml-0 w-full"
+        }`}
+      >
+        <MenuCurso/>
+        <ActividadesProximas/>
+      </main>
+      </div>
+        
+    </div>
+  )
+}

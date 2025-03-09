@@ -34,7 +34,7 @@ export default function MenuCurso() {
         <div className="" id="main">
           {/* Contennido */}
           <div className="md:col-span-9">
-            <Tabs defaultValue="cursos" className="w-full">
+            <Tabs defaultValue="inicio" className="w-full">
               <TabsList className="w-full justify-start">
                 <TabsTrigger value="inicio" className="flex items-center">
                   <GraduationCap className="mr-2 h-4 w-4" />
