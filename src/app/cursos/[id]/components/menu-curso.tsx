@@ -1,65 +1,62 @@
+'use client'
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, GraduationCap } from "lucide-react";
-import Link from "next/link";
+// import Link from "next/link";
 import React from "react";
-import { gql, useQuery } from '@apollo/client';
-import { CursoAsignacionResponse, CursoAsignacionesVars } from '@/app/types';
+import { useQuery } from '@apollo/client';
+import { CursoAsignacionResponse, CursoAsignacionesVars, UserEnrollmentsResponse, UserEnrollmentsVars, CursoSeccionesResponse, CursoSeccionesVars } from '@/app/types';
 import { Button } from "@/components/ui/button";
-
-
-export const GET_CURSO_ASIGNACIONES = gql`
-  query GetCursoAsignaciones($courseId: Int!) {
-    assignments(courseId: $courseId) {
-      allowsubmissionsfromdate
-      course
-      duedate
-      grade
-      id
-      intro
-      name
-      timemodified
-    }
-  }
-`;
+import { GET_USER_ENROLLMENTS, GET_CURSO_SECCIONES, GET_CURSO_ASIGNACIONES } from '@/app/api/graphql/api';
+import Navegacion from "@/components/navegacion";
 
 export default function MenuCurso() {
-  const courseId = 1; // ID del usuario logueado (para pruebas)
+  const courseId = 1; // ID del curso (para pruebas)
+    const userId = 4; // ID del usuario logueado (para pruebas)
   
-    const { data, loading, error, refetch } = useQuery<CursoAsignacionResponse, CursoAsignacionesVars>(
-      GET_CURSO_ASIGNACIONES,
+    // Consulta para obtener las inscripciones del usuario
+    const { data: enrollmentsData } = useQuery<UserEnrollmentsResponse, UserEnrollmentsVars>(
+      GET_USER_ENROLLMENTS,
       {
-        variables: { courseId },
-        fetchPolicy: 'cache-and-network', // Usar caché pero actualizar en segundo plano
+        variables: { userId },
+        fetchPolicy: 'cache-and-network',
         nextFetchPolicy: 'cache-first',
       }
     );
+  
+    // Consulta para obtener las secciones del curso
+    const { data: seccionesData } = useQuery<CursoSeccionesResponse, CursoSeccionesVars>(
+      GET_CURSO_SECCIONES,
+      {
+        variables: { courseId },
+        fetchPolicy: 'cache-and-network',
+        nextFetchPolicy: 'cache-first',
+      }
+    );
+  
+    // Consulta para obtener las asignaciones del curso
+    const { data: asignacionesData, loading: asignacionesLoading, error: asignacionesError, refetch: refetchAsignaciones } = useQuery<CursoAsignacionResponse, CursoAsignacionesVars>(
+      GET_CURSO_ASIGNACIONES,
+      {
+        variables: { courseId },
+        fetchPolicy: 'cache-and-network',
+        nextFetchPolicy: 'cache-first',
+      }
+    );
+
+    const cursoActual = enrollmentsData?.userEnrollments?.find(
+      (enrollment) => enrollment.courseid === courseId
+    )?.course;
 
   return (
     <>
       <div className="w-4/5 p-8">
         <div className="pb-10 max-w-max" id="navegacion">
-          <div className="md:col-span-9">
-            <Tabs defaultValue="cursos" className="w-full">
-              <TabsList className="w-full justify-start">
-                <TabsTrigger value="inicio" className="flex items-center">
-                  <Link className="hover:underline" href="/perfil">Area Personal</Link>
-                </TabsTrigger>
-                <TabsTrigger value="MisCursos" className="flex items-center">
-                  Mis Cursos
-                </TabsTrigger>
-                <TabsTrigger value="curso" className="flex items-center">
-                  <Link className="hover:underline" href="/cursos">Curso</Link>
-                </TabsTrigger>
-                <TabsTrigger value="unidad1" className="flex items-center">
-                  <Link className="hover:underline" href="/unidad1">Unidad 1</Link>
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
+          <Navegacion/>
         </div>
         <div className="pb-10">
-          <h1 className="text-4xl font-bold"> 1800 - Semiario de Investigacion</h1>
+          <h1 className="text-4xl font-bold"> 1800 - {cursoActual ? cursoActual.fullname : "Cargando curso..."}</h1>
         </div>
         <div className="" id="main">
           {/* Contennido */}
@@ -74,7 +71,6 @@ export default function MenuCurso() {
                   <Calendar className="mr-2 h-4 w-4" />
                   Unidad I
                 </TabsTrigger>
-
                 <TabsTrigger value="unidadII" className="flex items-center">
                   <Calendar className="mr-2 h-4 w-4" />
                   Unidad II
@@ -88,6 +84,23 @@ export default function MenuCurso() {
                   Cierre
                 </TabsTrigger>
               </TabsList>
+              {/* <TabsList className="w-full justify-start">
+     <TabsTrigger value="inicio" className="flex items-center">
+      <GraduationCap className="mr-2 h-4 w-4" />
+      Inicio
+    </TabsTrigger> 
+
+    {seccionesData?.courseSections?.map((seccion) => (
+      <TabsTrigger
+        key={seccion.id}
+        value={seccion.id.toString()} // Usar el ID de la sección como valor
+        className="flex items-center"
+      >
+        <Calendar className="mr-2 h-4 w-4" />
+        {seccion.name} {/* Mostrar el nombre de la sección */}
+      {/* </TabsTrigger>
+    ))}
+  </TabsList> */}
               <TabsContent value="inicio" className="mt-6">
                 <Card>
                   <CardContent className="pt-6">
@@ -112,20 +125,20 @@ export default function MenuCurso() {
                 <Card>
                   <CardContent className="pt-6">
                     <div className="space-y-4">
-                    {loading && <div className="flex justify-center p-8">Cargando cursos...</div>}
-                {error && (
+                    {asignacionesLoading && <div className="flex justify-center p-8">Cargando cursos...</div>}
+                {asignacionesError && (
                   <div className="text-red-500 p-4 bg-red-50 rounded-md">
-                    Error al cargar los cursos: {error.message}
+                    Error al cargar los cursos: {asignacionesError.message}
                     <Button 
                       variant="outline" 
                       className="mt-2" 
-                      onClick={() => refetch()}
+                      onClick={() => refetchAsignaciones()}
                     >
                       Reintentar
                     </Button>
                   </div>
                 )}
-                {data?.assignments?.map((asignaciones) => (
+                {asignacionesData?.assignments?.map((asignaciones) => (
                   <div key={asignaciones.id} className="p-2">
                     {asignaciones.intro}
                   </div>
