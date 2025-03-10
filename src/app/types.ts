@@ -35,3 +35,48 @@ export interface Course {
     userId: number;
   }
   
+  export interface Asignaciones {
+    allowsubmissionsfromdate: string;
+    course: number;
+    duedate: string;
+    grade: number;
+    id: number;
+    intro: string;
+    name: string;
+    timemodified: string;
+  }
+
+  export interface CursoAsignacionResponse {
+    assignments: {
+      allowsubmissionsfromdate: string;
+      course: number;
+      duedate: string;
+      grade: number;
+      id: number;
+      intro: string;
+      name: string;
+      timemodified: string;
+    }[];
+  }
+  
+  export interface CursoAsignacionesVars {
+    courseId: number;
+  }  
+
+
+  export interface CursoSeccionesResponse {
+    courseSections: {
+      course: number;
+      id: number;
+      name: string;
+      section: number;
+      sequence: string;
+      timemodified: string;
+      visible: boolean;
+      summary: string;
+    }[];
+  }
+  
+  export interface CursoSeccionesVars {
+    courseId: number;
+  } 

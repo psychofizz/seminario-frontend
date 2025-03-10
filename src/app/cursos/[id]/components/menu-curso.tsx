@@ -3,8 +3,38 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar, GraduationCap } from "lucide-react";
 import Link from "next/link";
 import React from "react";
+import { gql, useQuery } from '@apollo/client';
+import { CursoAsignacionResponse, CursoAsignacionesVars } from '@/app/types';
+import { Button } from "@/components/ui/button";
+
+
+export const GET_CURSO_ASIGNACIONES = gql`
+  query GetCursoAsignaciones($courseId: Int!) {
+    assignments(courseId: $courseId) {
+      allowsubmissionsfromdate
+      course
+      duedate
+      grade
+      id
+      intro
+      name
+      timemodified
+    }
+  }
+`;
 
 export default function MenuCurso() {
+  const courseId = 1; // ID del usuario logueado (para pruebas)
+  
+    const { data, loading, error, refetch } = useQuery<CursoAsignacionResponse, CursoAsignacionesVars>(
+      GET_CURSO_ASIGNACIONES,
+      {
+        variables: { courseId },
+        fetchPolicy: 'cache-and-network', // Usar caché pero actualizar en segundo plano
+        nextFetchPolicy: 'cache-first',
+      }
+    );
+
   return (
     <>
       <div className="w-4/5 p-8">
@@ -82,18 +112,24 @@ export default function MenuCurso() {
                 <Card>
                   <CardContent className="pt-6">
                     <div className="space-y-4">
-                      {[1, 2, 3].map((activity) => (
-                        <div
-                          key={activity}
-                          className="flex items-start space-x-4 py-6 border-b last:border-0"
-                        >
-                          <Calendar className="h-5 w-5 text-blue-600" />
-                          <div>
-                            <p className="font-medium">Actividad {activity}</p>
-                            <p className="text-sm text-gray-500">Hace 2 días</p>
-                          </div>
-                        </div>
-                      ))}
+                    {loading && <div className="flex justify-center p-8">Cargando cursos...</div>}
+                {error && (
+                  <div className="text-red-500 p-4 bg-red-50 rounded-md">
+                    Error al cargar los cursos: {error.message}
+                    <Button 
+                      variant="outline" 
+                      className="mt-2" 
+                      onClick={() => refetch()}
+                    >
+                      Reintentar
+                    </Button>
+                  </div>
+                )}
+                {data?.assignments?.map((asignaciones) => (
+                  <div key={asignaciones.id} className="p-2">
+                    {asignaciones.intro}
+                  </div>
+                ))}
                     </div>
                   </CardContent>
                 </Card>

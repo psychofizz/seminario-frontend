@@ -32,7 +32,7 @@ interface SidebarProps {
 
 export default function Sidebar({ isMenuOpen, toggleMenu }: SidebarProps) {
   const pathname = usePathname();
-  const userId = 1; // ID del usuario logueado (para pruebas)
+  const userId = 4; // ID del usuario logueado (para pruebas)
 
   const { data, loading, error, refetch } = useQuery<UserEnrollmentsResponse, UserEnrollmentsVars>(
     GET_USER_ENROLLMENTS,
@@ -47,7 +47,6 @@ export default function Sidebar({ isMenuOpen, toggleMenu }: SidebarProps) {
     { ruta: "Area Personal", href: "/perfil", current: true },
     { ruta: "Pagina Principal del Sitio", href: "/", current: false },
     { ruta: "Archivos Privados", href: "/archivos", current: false },
-    { ruta: "Mis Cursos", href: "/cursos", current: false },
   ];
 
   return (

@@ -1,5 +1,5 @@
 // api.ts
-import { UserEnrollmentsResponse, UserEnrollmentsVars } from '@/app/types';
+import { CursoAsignacionesVars, CursoAsignacionResponse, CursoSeccionesResponse, CursoSeccionesVars, UserEnrollmentsResponse, UserEnrollmentsVars } from '@/app/types';
 import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
 
 // Configura el cliente de Apollo con la URL de tu backend GraphQL
@@ -79,40 +79,58 @@ export const login = async (email: string, password: string) => {
 };
 
 export const GET_CURSO_ASIGNACIONES = gql`
-  query GetUserEnrollments($userId: Int!) {
-    userEnrollments(userId: $userId) {
+  query GetCursoAsignaciones($courseId: Int!) {
+    assignments(courseId: $courseId) {
+      allowsubmissionsfromdate
+      course
+      duedate
+      grade
       id
-      enrolid
-      userid
-      courseid
-      status
-      timestart
-      timeend
-      timecreated
+      intro
+      name
       timemodified
-      course {
-        id
-        fullname
-        shortname
-        summary
-        visible
-        startdate
-        enddate
-        format
-      }
     }
   }
 `;
 
-// Función para obtener las inscripciones de un usuario
-export const getCursoASignaciones = async (userId: number) => {
+export const getCursoAsignaciones = async (courseId: number) => {
   try {
-    const { data } = await client.query<UserEnrollmentsResponse, UserEnrollmentsVars>({
+    const { data } = await client.query<CursoAsignacionResponse, CursoAsignacionesVars>({
       query: GET_CURSO_ASIGNACIONES,
-      variables: { userId },
+      variables: { courseId },
       fetchPolicy: 'network-only', // Para obtener datos actualizados
     });
-    return data.userEnrollments;
+    return data.assignments;
+  } catch (error) {
+    console.error('Error fetching user enrollments:', error);
+    throw error;
+  }
+};
+
+
+export const GET_CURSO_SECCIONES = gql`
+  query GetCursoAsignaciones($courseId: Int!) {
+    courseSections(courseId: $courseId) {
+      course
+      id
+      name
+      section
+      sequence
+      timemodified
+      visible
+      summary
+    }
+  }
+`;
+
+export const getCursoSecciones = async (courseId: number) => {
+  try {
+    const { data } = await client.query<CursoSeccionesResponse, CursoSeccionesVars>({
+      query: GET_CURSO_SECCIONES,
+      variables: { courseId },
+      fetchPolicy: 'network-only', // Para obtener datos actualizados
+    });
+    return data.courseSections;
   } catch (error) {
     console.error('Error fetching user enrollments:', error);
     throw error;
