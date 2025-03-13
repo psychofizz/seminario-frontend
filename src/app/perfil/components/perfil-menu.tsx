@@ -5,8 +5,36 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GraduationCap, Calendar } from "lucide-react";
 import Image from "next/image";
 import CoursesUser from "@/app/cursos/components/course";
+import { Enrollment, UserEnrollmentsVars } from "@/app/types";
+import { GET_USER_ENROLLMENTS } from "@/app/api/graphql/api";
+import { useQuery } from "@apollo/client";
+import { useRouter } from "next/navigation";
+import { startTransition } from "react";
+// import { usePathname } from "next/navigation";
 
 export default function MainContent() {
+  const userId = 4;
+  // const pathname = usePathname();
+  const router = useRouter();
+
+  const { data: enrollmentsData, error, loading } = useQuery<{ userEnrollments: Enrollment[] }, UserEnrollmentsVars>(
+    GET_USER_ENROLLMENTS,
+    {
+      variables: { userId },
+      fetchPolicy: "cache-and-network",
+      nextFetchPolicy: "cache-first",
+    }
+  );
+
+  const handleCardClick = (curso: Enrollment) => {
+    startTransition(() => {
+      router.push(`/cursos/${curso.courseid}`);
+    });
+  };
+
+  if (loading) return <p>Cargando...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
   return (
     <main className="container mx-auto px-10 py-6">
       <div className="">
@@ -25,8 +53,8 @@ export default function MainContent() {
 
             <TabsContent value="cursos" className="mt-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {[1, 2, 3, 4].map((course) => (
-                  <Card key={course}>
+                {enrollmentsData?.userEnrollments.map((curso) => (
+                  <Card className="hover:cursor-pointer" key={curso.courseid} onClick={() => handleCardClick(curso)}>
                     <CardHeader>
                       <CardTitle className="text-lg">
                         <Image
@@ -41,7 +69,7 @@ export default function MainContent() {
                     <CardContent>
                       <p className="text-sm text-gray-500">Período: 2025-1</p>
                       <p className="text-sm text-gray-500">
-                        Docente: Nombre del Docente
+                        {curso.course.fullname}
                       </p>
                     </CardContent>
                   </Card>

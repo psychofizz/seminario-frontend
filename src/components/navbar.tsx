@@ -32,10 +32,10 @@ export default function Navbar({ isMenuOpen, toggleMenu }: NavbarProps) {
             <h1 className="text-xl font-bold hidden md:block">Campus Virtual</h1>
           </div>
           <div className="flex items-center space-x-4">
-            <button className="p-2 hover:bg-[#002347] rounded-full" title="Notificaciones">
+            <button className="p-2 hover:bg-[#002347] rounded-full hover:cursor-pointer" title="Notificaciones">
               <Bell className="h-5 w-5" />
             </button>
-            <button className="p-2 hover:bg-[#002347] rounded-full" title="Mensajes">
+            <button className="p-2 hover:bg-[#002347] rounded-full hover:cursor-pointer" title="Mensajes">
               <MessageSquare className="h-5 w-5" />
             </button>
             <Avatar className="h-8 w-8">

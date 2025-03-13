@@ -5,7 +5,11 @@ import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
 import { useState } from "react";
 
-export function DetalleCursoCLient() {
+interface DetalleCursoProps {
+  courseId: string;
+}
+
+export function DetalleCursoCLient({ courseId }: DetalleCursoProps) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const toggleMenu = () => {
@@ -22,7 +26,7 @@ export function DetalleCursoCLient() {
           isMenuOpen ? "ml-64 w-[calc(100%-16rem)]" : "ml-0 w-full"
         }`}
       >
-        <MenuCurso/>
+        <MenuCurso courseId={courseId}/>
         <ActividadesProximas/>
       </main>
       </div>

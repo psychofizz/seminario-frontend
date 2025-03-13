@@ -32,8 +32,7 @@ interface SidebarProps {
 
 export default function Sidebar({ isMenuOpen, toggleMenu }: SidebarProps) {
   const pathname = usePathname();
-  const userId = 4; // ID del usuario logueado (para pruebas)
-
+  const userId = 4; 
   const { data, loading, error, refetch } = useQuery<UserEnrollmentsResponse, UserEnrollmentsVars>(
     GET_USER_ENROLLMENTS,
     {

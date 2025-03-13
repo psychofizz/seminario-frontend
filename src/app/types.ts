@@ -1,4 +1,3 @@
-// types.ts
 export interface Course {
     id: number;
     category: number;
@@ -8,10 +7,10 @@ export interface Course {
     summary?: string;
     format: string;
     visible: boolean;
-    startdate: string; // ISO date string
-    enddate?: string; // ISO date string
-    timecreated: string; // ISO date string
-    timemodified: string; // ISO date string
+    startdate: string; 
+    enddate?: string;
+    timecreated: string; 
+    timemodified: string; 
   }
   
   export interface Enrollment {
@@ -20,10 +19,10 @@ export interface Course {
     userid: number;
     courseid: number;
     status: number; // 0=active, 1=suspended
-    timestart?: string; // ISO date string
-    timeend?: string; // ISO date string
-    timecreated: string; // ISO date string
-    timemodified: string; // ISO date string
+    timestart?: string; 
+    timeend?: string; 
+    timecreated: string; 
+    timemodified: string; 
     course: Course;
   }
   
