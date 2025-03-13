@@ -50,6 +50,7 @@ export interface Course {
     assignments: {
       allowsubmissionsfromdate: string;
       course: number;
+      section: number;
       duedate: string;
       grade: number;
       id: number;
@@ -61,6 +62,7 @@ export interface Course {
   
   export interface CursoAsignacionesVars {
     courseId: number;
+    sectionId: number;
   }  
 
 
@@ -85,6 +87,7 @@ export interface Course {
     assignment: {
       allowsubmissionsfromdate: string;
       course: number;
+      section: number;
       duedate: string;
       grade: number;
       id: number;

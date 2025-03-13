@@ -14,6 +14,7 @@ import Navegacion from "@/components/navegacion";
 export default function MenuCurso() {
   const courseId = 1;
     const userId = 4; 
+    const sectionId = 2;
   
     // Consulta para obtener las inscripciones del usuario
     const { data: enrollmentsData } = useQuery<UserEnrollmentsResponse, UserEnrollmentsVars>(
@@ -39,12 +40,13 @@ export default function MenuCurso() {
     const { data: asignacionesData, loading: asignacionesLoading, error: asignacionesError, refetch: refetchAsignaciones } = useQuery<CursoAsignacionResponse, CursoAsignacionesVars>(
       GET_CURSO_ASIGNACIONES,
       {
-        variables: { courseId },
+        variables: { courseId, sectionId },
         fetchPolicy: 'cache-and-network',
         nextFetchPolicy: 'cache-first',
       }
     );
 
+    console.log(asignacionesData);
     const cursoActual = enrollmentsData?.userEnrollments?.find(
       (enrollment) => enrollment.courseid === courseId
     )?.course;
@@ -118,7 +120,7 @@ export default function MenuCurso() {
                         )}
                         {/* Filtrar las asignaciones que pertenecen a esta sección */}
                         {asignacionesData?.assignments?.filter(asignacion => 
-                          asignacion.id === seccion.id
+                          asignacion.section === seccion.id
                         ).map((asignacion) => (
                           <div
                             key={asignacion.id}

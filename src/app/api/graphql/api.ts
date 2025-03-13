@@ -141,25 +141,26 @@ export const login = async (email: string, password: string) => {
 };
 
 export const GET_CURSO_ASIGNACIONES = gql`
-  query GetCursoAsignaciones($courseId: Int!) {
-    assignments(courseId: $courseId) {
-      allowsubmissionsfromdate
-      course
-      duedate
-      grade
-      id
-      intro
-      name
-      timemodified
+  query GetCursoAsignaciones($courseId: Int!, $sectionId: Int!) {
+    assignments(courseId: $courseId, sectionId: $sectionId) {
+    course
+    grade
+    intro
+    name
+    allowsubmissionsfromdate
+    duedate
+    id
+    section
+    timemodified
     }
   }
 `;
 
-export const getCursoAsignaciones = async (courseId: number) => {
+export const getCursoAsignaciones = async (courseId: number, sectionId: number) => {
   try {
     const { data } = await client.query<CursoAsignacionResponse, CursoAsignacionesVars>({
       query: GET_CURSO_ASIGNACIONES,
-      variables: { courseId },
+      variables: { courseId, sectionId},
       fetchPolicy: 'network-only', // Para obtener datos actualizados
     });
     return data.assignments;
