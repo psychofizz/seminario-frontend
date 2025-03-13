@@ -9,21 +9,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "./ui/accordion";
-import { gql, useQuery } from '@apollo/client';
-import { UserEnrollmentsResponse, UserEnrollmentsVars } from '@/app/types';
+import { useQuery } from '@apollo/client';
+import { Enrollment, UserEnrollmentsVars } from '@/app/types';
 import { Button } from "./ui/button";
-
-const GET_USER_ENROLLMENTS = gql`
-  query GetUserEnrollments($userId: Int!) {
-    userEnrollments(userId: $userId) {
-      id
-      course {
-        id
-        fullname
-      }
-    }
-  }
-`;
+import { startTransition } from "react";
+import { useRouter } from "next/navigation";
+import { GET_USER_ENROLLMENTS } from "@/app/api/graphql/api";
 
 interface SidebarProps {
   isMenuOpen: boolean;
@@ -33,20 +24,35 @@ interface SidebarProps {
 export default function Sidebar({ isMenuOpen, toggleMenu }: SidebarProps) {
   const pathname = usePathname();
   const userId = 4; 
-  const { data, loading, error, refetch } = useQuery<UserEnrollmentsResponse, UserEnrollmentsVars>(
-    GET_USER_ENROLLMENTS,
-    {
-      variables: { userId },
-      fetchPolicy: 'cache-and-network', // Usar caché pero actualizar en segundo plano
-      nextFetchPolicy: 'cache-first',
-    }
-  );
+  const router = useRouter();
+  // const { data, loading, error, refetch } = useQuery<UserEnrollmentsResponse, UserEnrollmentsVars>(
+  //   GET_USER_ENROLLMENTS,
+  //   {
+  //     variables: { userId },
+  //     fetchPolicy: 'cache-and-network', // Usar caché pero actualizar en segundo plano
+  //     nextFetchPolicy: 'cache-first',
+  //   }
+  // );
+  const { data, error, loading, refetch } = useQuery<{ userEnrollments: Enrollment[] }, UserEnrollmentsVars>(
+      GET_USER_ENROLLMENTS,
+      {
+        variables: { userId },
+        fetchPolicy: "cache-and-network",
+        nextFetchPolicy: "cache-first",
+      }
+    );
 
   const pages = [
     { ruta: "Area Personal", href: "/perfil", current: true },
     { ruta: "Pagina Principal del Sitio", href: "/", current: false },
     { ruta: "Archivos Privados", href: "/archivos", current: false },
   ];
+
+  const handleClick = (curso: Enrollment) => {
+      startTransition(() => {
+        router.push(`/cursos/${curso.courseid}`);
+      });
+    };
 
   return (
     <div
@@ -94,9 +100,9 @@ export default function Sidebar({ isMenuOpen, toggleMenu }: SidebarProps) {
                     </Button>
                   </div>
                 )}
-                {data?.userEnrollments?.map((enrollment) => (
-                  <div key={enrollment.id} className="p-2">
-                    {enrollment.course.fullname}
+                {data?.userEnrollments?.map((curso) => (
+                  <div key={curso.courseid} className="p-2 hover:cursor-pointer hover:bg-gray-200 rounded-md" onClick={() => handleClick(curso)}>
+                    {curso.course.fullname}
                   </div>
                 ))}
               </AccordionContent>

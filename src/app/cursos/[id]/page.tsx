@@ -6,6 +6,8 @@ interface CourseParams {
   }
 }
 
-export default function PageDetalleCurso({ params }: CourseParams) {
-  return <DetalleCursoCLient courseId={params.id} />;
+export default async function PageDetalleCurso({ params }: CourseParams) {
+  const resolvedParams = await params;
+  
+  return <DetalleCursoCLient courseId={resolvedParams.id} />;
 }

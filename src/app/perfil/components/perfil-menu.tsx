@@ -28,7 +28,7 @@ export default function MainContent() {
 
   const handleCardClick = (curso: Enrollment) => {
     startTransition(() => {
-      router.push(`/cursos/${curso.courseid}`);
+      router.push(`/cursos/${curso.id}`);
     });
   };
 
@@ -54,7 +54,7 @@ export default function MainContent() {
             <TabsContent value="cursos" className="mt-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {enrollmentsData?.userEnrollments.map((curso) => (
-                  <Card className="hover:cursor-pointer" key={curso.courseid} onClick={() => handleCardClick(curso)}>
+                  <Card className="hover:cursor-pointer" key={curso.id} onClick={() => handleCardClick(curso)}>
                     <CardHeader>
                       <CardTitle className="text-lg">
                         <Image

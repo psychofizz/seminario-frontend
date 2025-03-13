@@ -32,17 +32,17 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-[#f5f5f5] flex flex-row">
-      <div className="hidden md:flex w-1/2 bg-slate-200">
-        <Image
+      <Image
           src="https://campusvirtual.unah.edu.hn/pluginfile.php/1/theme_space/loginbg/1738566175/login_bg.jpg"
           alt="UNAH Logo"
-          width={2000}
-          height={2000}
-          className="mx-auto"
+          width={3000}
+          height={3000}
+          className="mx-auto bg-accent bg-cover max-h-screen"
         />
-      </div>
+      {/* <div className="hidden md:flex w-1/2 bg-slate-200">
+      </div> */}
 
-      <div className="md:w-1/2 w-full pt-12 flex justify-center items-center relative">
+      <div className=" bg-white lg:w-1/2 w-full pt-12 flex justify-center items-center absolute min-h-screen right-0">
         <div className="w-full max-w-[400px] space-y-6">
           <div className="text-center space-y-2">
             <Image
