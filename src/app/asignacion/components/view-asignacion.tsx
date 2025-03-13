@@ -1,23 +1,25 @@
 "use client";
-import { GET_CURSO_ASIGNACIONES } from "@/app/api/graphql/api";
-import { CursoAsignacionesVars, CursoAsignacionResponse } from "@/app/types";
+import { GET_ASIGNACION } from "@/app/api/graphql/api";
+import { GetAsignacionesVars, GetAsignacionResponse } from "@/app/types";
 import Navegacion from "@/components/navegacion";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
 import { Card, CardContent } from "@/components/ui/card";
+import { format } from "date-fns";
 
 export default function ViewAsignacion() {
-  const courseId = 1;
+  const assignmentId = 2;
   const { data, loading, error, refetch } = useQuery<
-    CursoAsignacionResponse,
-    CursoAsignacionesVars
-  >(GET_CURSO_ASIGNACIONES, {
-    variables: { courseId },
+  GetAsignacionResponse,
+  GetAsignacionesVars
+  >(GET_ASIGNACION, {
+    variables: { assignmentId },
     fetchPolicy: "cache-and-network", // Usar caché pero actualizar en segundo plano
     nextFetchPolicy: "cache-first",
+    errorPolicy: "all",
   });
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -25,6 +27,24 @@ export default function ViewAsignacion() {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+  
+  const formatDate = (dateString: string | null | undefined) => {
+    if (!dateString) return "No establecida";
+    try {
+      return format(new Date(dateString), "dd/MM/yyyy HH:mm");
+    } catch (e) {
+      console.error("Error formateando fecha:", e);
+      return "Fecha inválida";
+    }
+  };
+  
+
+  useEffect(() => {
+    // Log solo en desarrollo
+    if (process.env.NODE_ENV === "development") {
+      console.log("Datos obtenidos:", data);
+    }
+  }, [data]);
 
   return (
     <div className="min-h-screen w-full overflow-x-hidden">
@@ -58,23 +78,23 @@ export default function ViewAsignacion() {
                 </Button>
               </div>
             )}
-            {data?.assignments?.map((asignaciones) => (
-              <div key={asignaciones.id} className="p-2">
+            {data?.assignment && (
+              <div className="p-2">
                 <div className="text-3xl font-light pb-4">
-                  {asignaciones.name}
+                  {data.assignment.name}
                 </div>
                 <div className="flex flex-row pb-16 gap-4">
                   <div className="bg-amber-200 rounded-2xl p-2">
-                    {asignaciones.allowsubmissionsfromdate}
+                  {formatDate(data.assignment.allowsubmissionsfromdate)}
                   </div>
                   <div className="bg-amber-200 rounded-2xl p-2">
-                    {asignaciones.duedate}
+                  {formatDate(data.assignment.duedate)}
                   </div>
                 </div>
-                <div className="">{asignaciones.name}</div>
-                <div>{asignaciones.intro}</div>
+                <div className="">{data.assignment.name}</div>
+                <div>{data.assignment.intro}</div>
 
-                <div className="pb-60">
+                <div className="pb-32">
                   <Card>
                     <CardContent className="pt-6">
                       <div className="space-y-4 w-full">
@@ -97,6 +117,7 @@ export default function ViewAsignacion() {
                             <p className="text-sm text-gray-500">
                               Última Modificación
                             </p>
+                            <p className="font-medium">{formatDate(data.assignment.timemodified)}</p>
                             <hr className="my-2 border-gray-300" />{" "}
                             <p className="text-sm text-gray-500">
                               Comentarios de la entrega
@@ -111,7 +132,7 @@ export default function ViewAsignacion() {
                   <Button variant="default"> Agregar Entrega</Button>
                 </div>
               </div>
-            ))}
+            )}
           </div>
         </main>
       </div>

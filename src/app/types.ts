@@ -80,3 +80,20 @@ export interface Course {
   export interface CursoSeccionesVars {
     courseId: number;
   } 
+
+  export interface GetAsignacionResponse {
+    assignment: {
+      allowsubmissionsfromdate: string;
+      course: number;
+      duedate: string;
+      grade: number;
+      id: number;
+      intro: string;
+      name: string;
+      timemodified: string;
+    }; 
+  }
+  
+  export interface GetAsignacionesVars {
+    assignmentId: number;
+  }

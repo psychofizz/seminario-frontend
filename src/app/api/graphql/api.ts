@@ -1,11 +1,73 @@
 // api.ts
-import { CursoAsignacionesVars, CursoAsignacionResponse, CursoSeccionesResponse, CursoSeccionesVars, UserEnrollmentsResponse, UserEnrollmentsVars } from '@/app/types';
-import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
+import { CursoAsignacionesVars, CursoAsignacionResponse, CursoSeccionesResponse, CursoSeccionesVars, GetAsignacionesVars, GetAsignacionResponse, UserEnrollmentsResponse, UserEnrollmentsVars } from '@/app/types';
+// import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
 
-// Configura el cliente de Apollo con la URL de tu backend GraphQL
-export const client = new ApolloClient({
+// // Configura el cliente de Apollo con la URL de tu backend GraphQL
+// export const client = new ApolloClient({
+//   uri: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/graphql',
+//   cache: new InMemoryCache(),
+// });
+
+import { ApolloClient, InMemoryCache, gql, HttpLink, from } from '@apollo/client';
+import { onError } from '@apollo/client/link/error';
+
+// Manejo de errores global
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors)
+    graphQLErrors.forEach(({ message, locations, path }) =>
+      console.error(
+        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+      )
+    );
+  if (networkError) console.error(`[Network error]: ${networkError}`);
+});
+
+const httpLink = new HttpLink({
   uri: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/graphql',
-  cache: new InMemoryCache(),
+});
+
+// Configuración mejorada de caché
+const cache = new InMemoryCache({
+  typePolicies: {
+    Query: {
+      fields: {
+        // Configuración para asignaciones individuales
+        assignment: {
+          read(_, { args, toReference }) {
+            return toReference({
+              __typename: 'Assignment',
+              id: args?.assignmentId,
+            });
+          }
+        },
+        // Configuración para listas de asignaciones
+        assignments: {
+          merge(existing = [], incoming) {
+            return [...incoming];
+          }
+        }
+      }
+    }
+  }
+});
+
+// Crear el cliente de Apollo
+export const client = new ApolloClient({
+  link: from([errorLink, httpLink]),
+  cache,
+  defaultOptions: {
+    watchQuery: {
+      fetchPolicy: 'cache-and-network',
+      errorPolicy: 'all',
+    },
+    query: {
+      fetchPolicy: 'cache-first',
+      errorPolicy: 'all',
+    },
+    mutate: {
+      errorPolicy: 'all',
+    },
+  },
 });
 
 // Consulta GraphQL para obtener las inscripciones de un usuario
@@ -131,6 +193,35 @@ export const getCursoSecciones = async (courseId: number) => {
       fetchPolicy: 'network-only', // Para obtener datos actualizados
     });
     return data.courseSections;
+  } catch (error) {
+    console.error('Error fetching user enrollments:', error);
+    throw error;
+  }
+};
+
+export const GET_ASIGNACION = gql`
+  query GetAssignment($assignmentId: Int!) {
+    assignment(assignmentId: $assignmentId) {
+      allowsubmissionsfromdate
+      course
+      duedate
+      grade
+      id
+      intro
+      name
+      timemodified
+    }
+  }
+`;
+
+export const getAsignacion = async (assignmentId: number) => {
+  try {
+    const { data } = await client.query<GetAsignacionResponse, GetAsignacionesVars>({
+      query: GET_ASIGNACION,
+      variables: { assignmentId },
+      fetchPolicy: 'network-only', // Para obtener datos actualizados
+    });
+    return data.assignment;
   } catch (error) {
     console.error('Error fetching user enrollments:', error);
     throw error;
