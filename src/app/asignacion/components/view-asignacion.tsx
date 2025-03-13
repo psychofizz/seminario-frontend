@@ -1,6 +1,11 @@
 "use client";
-import { GET_ASIGNACION } from "@/app/api/graphql/api";
-import { GetAsignacionesVars, GetAsignacionResponse } from "@/app/types";
+import { GET_ASIGNACION, GET_USER_ENROLLMENTS } from "@/app/api/graphql/api";
+import {
+  GetAsignacionesVars,
+  GetAsignacionResponse,
+  UserEnrollmentsResponse,
+  UserEnrollmentsVars,
+} from "@/app/types";
 import Navegacion from "@/components/navegacion";
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
@@ -11,10 +16,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
 
 export default function ViewAsignacion() {
+  const courseId = 2;
   const assignmentId = 2;
+  const userId = 4;
   const { data, loading, error, refetch } = useQuery<
-  GetAsignacionResponse,
-  GetAsignacionesVars
+    GetAsignacionResponse,
+    GetAsignacionesVars
   >(GET_ASIGNACION, {
     variables: { assignmentId },
     fetchPolicy: "cache-and-network", // Usar caché pero actualizar en segundo plano
@@ -27,7 +34,7 @@ export default function ViewAsignacion() {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
-  
+
   const formatDate = (dateString: string | null | undefined) => {
     if (!dateString) return "No establecida";
     try {
@@ -37,7 +44,6 @@ export default function ViewAsignacion() {
       return "Fecha inválida";
     }
   };
-  
 
   useEffect(() => {
     // Log solo en desarrollo
@@ -45,6 +51,19 @@ export default function ViewAsignacion() {
       console.log("Datos obtenidos:", data);
     }
   }, [data]);
+
+  const { data: enrollmentsData } = useQuery<
+    UserEnrollmentsResponse,
+    UserEnrollmentsVars
+  >(GET_USER_ENROLLMENTS, {
+    variables: { userId },
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
+  });
+
+  const cursoActual = enrollmentsData?.userEnrollments?.find(
+    (enrollment) => enrollment.courseid === courseId
+  )?.course;
 
   return (
     <div className="min-h-screen w-full overflow-x-hidden">
@@ -60,7 +79,9 @@ export default function ViewAsignacion() {
             <Navegacion />
           </div>
           <div className="pb-4">
-            <h1 className="text-5xl font-bold font-sans">1800- Seminario</h1>
+            <h1 className="text-5xl font-bold font-sans">
+              1800 - {cursoActual ? cursoActual.fullname : "Cargando curso..."}
+            </h1>
           </div>
           <div>
             {loading && (
@@ -85,10 +106,11 @@ export default function ViewAsignacion() {
                 </div>
                 <div className="flex flex-row pb-16 gap-4">
                   <div className="bg-amber-200 rounded-2xl p-2">
-                  {formatDate(data.assignment.allowsubmissionsfromdate)}
+                    Apertura:{" "}
+                    {formatDate(data.assignment.allowsubmissionsfromdate)}
                   </div>
                   <div className="bg-amber-200 rounded-2xl p-2">
-                  {formatDate(data.assignment.duedate)}
+                    Cierre: {formatDate(data.assignment.duedate)}
                   </div>
                 </div>
                 <div className="">{data.assignment.name}</div>
@@ -100,28 +122,42 @@ export default function ViewAsignacion() {
                       <div className="space-y-4 w-full">
                         <div className="flex items-center space-x-4 py-6 border-b last:border-0">
                           <div className="w-full">
-                            <p className="text-sm text-gray-500">Grupo</p>
+                            <div className="flex flex-row">
+                              <p className="font-bold text-gray-800">Grupo:</p>
+                            </div>
                             <hr className="my-2 border-gray-300 w-full" />{" "}
-                            <p className="text-sm text-gray-500">
-                              Estado de Entrega
-                            </p>
+                            <div className="flex flex-row">
+                              <p className="font-bold text-gray-800">
+                                Estado de Entrega:
+                              </p>
+                            </div>
                             <hr className="my-2 border-gray-300" />{" "}
-                            <p className="text-sm text-gray-500">
-                              Estado de la calificación
-                            </p>
+                            <div className="flex flex-row">
+                              <p className="font-bold text-gray-800">
+                                Estado de la calificación:
+                              </p>
+                            </div>
                             <hr className="my-2 border-gray-300" />{" "}
-                            <p className="text-sm text-gray-500">
-                              Tiempo restante
-                            </p>
+                            <div className="flex flex-row">
+                              <p className="font-bold text-gray-800">
+                                Tiempo restante:
+                              </p>
+                            </div>
                             <hr className="my-2 border-gray-300" />{" "}
-                            <p className="text-sm text-gray-500">
-                              Última Modificación
-                            </p>
-                            <p className="font-medium">{formatDate(data.assignment.timemodified)}</p>
+                            <div className="flex flex-row">
+                              <p className="font-bold text-gray-800">
+                                Última Modificación:
+                              </p>
+                              <p className="font-normal mx-4">
+                                {formatDate(data.assignment.timemodified)}
+                              </p>
+                            </div>
                             <hr className="my-2 border-gray-300" />{" "}
-                            <p className="text-sm text-gray-500">
-                              Comentarios de la entrega
-                            </p>
+                            <div className="flex flex-row">
+                              <p className="font-bold text-gray-800">
+                                Comentarios de la entrega:
+                              </p>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -129,7 +165,7 @@ export default function ViewAsignacion() {
                   </Card>
                 </div>
                 <div className="flex justify-center items-center">
-                  <Button variant="default"> Agregar Entrega</Button>
+                  <Button variant="outline" className="hover:cursor-pointer hover:shadow-gray-600 hover:z-20">Agregar entrega</Button>
                 </div>
               </div>
             )}
