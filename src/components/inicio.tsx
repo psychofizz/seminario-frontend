@@ -51,11 +51,14 @@ export default function Inicio() {
           </div>
 
           <div className="pt-16 flex justify-center flex-col">
-            <div>
+          <Link href="/login">
+          <div>
               <Button className="w-80 h-16" variant="yellow">
                 <p className="font-medium text-lg">ACCEDER AL CAMPUS VIRTUAL</p>
+                <LogIn />
               </Button>
             </div>
+          </Link>  
             <div className="pt-4">
               <Button className="my-2 mr-2 ml-2 hover:bg-amber-50 cursor-pointer" variant="outline">
                 <p className="text-sm font-medium">ACCEDER CAMPUS HISTÓRICO</p>

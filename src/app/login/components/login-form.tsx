@@ -42,7 +42,7 @@ export default function Login() {
       {/* <div className="hidden md:flex w-1/2 bg-slate-200">
       </div> */}
 
-      <div className=" bg-white lg:w-1/2 w-full pt-12 flex justify-center items-center absolute min-h-screen right-0">
+      <div className=" bg-white lg:w-1/3 w-full pt-12 flex justify-center items-center absolute min-h-screen right-0">
         <div className="w-full max-w-[400px] space-y-6">
           <div className="text-center space-y-2">
             <Image
