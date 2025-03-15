@@ -4,15 +4,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar } from "lucide-react";
 // import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { startTransition, useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import {
-  CursoAsignacionResponse,
   CursoAsignacionesVars,
   UserEnrollmentsResponse,
   UserEnrollmentsVars,
   CursoSeccionesResponse,
   CursoSeccionesVars,
+  Asignacion,
 } from "@/app/types";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +23,7 @@ import {
 import Navegacion from "@/components/navegacion";
 import { format } from "date-fns";
 // import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 interface MenuCursoProps {
   courseId: string;
@@ -33,10 +34,9 @@ export default function MenuCurso({ courseId }: MenuCursoProps) {
   const numericCourseId = parseInt(courseId, 10);
   const userId = 4;
   const [activeTab, setActiveTab] = useState<string>("inicio");
+  const router = useRouter();
 
   useEffect(() => {
-    console.log("MenuCurso recibió courseId:", courseId);
-    console.log("numericCourseId:", numericCourseId);
   }, [courseId, numericCourseId]);
 
   // Consulta para obtener las inscripciones del usuario
@@ -66,7 +66,7 @@ export default function MenuCurso({ courseId }: MenuCursoProps) {
     loading: asignacionesLoading,
     error: asignacionesError,
     refetch: refetchAsignaciones,
-  } = useQuery<CursoAsignacionResponse, CursoAsignacionesVars>(
+  } = useQuery<{ assignments: Asignacion[] }, CursoAsignacionesVars>(
     GET_CURSO_ASIGNACIONES,
     {
       variables: { courseId:numericCourseId, sectionId: 0 },
@@ -83,6 +83,12 @@ export default function MenuCurso({ courseId }: MenuCursoProps) {
   const handleTabChange = (value: string) => {
     setActiveTab(value);
   };
+
+  const handleClick = (asignacion: Asignacion) => {
+      startTransition(() => {
+        router.push(`/asignacion/${asignacion.id}`);
+      });
+    };
 
     const formatDate = (dateString: string | null | undefined) => {
       if (!dateString) return "No establecida";
@@ -197,6 +203,7 @@ export default function MenuCurso({ courseId }: MenuCursoProps) {
                             ? seccionAsignaciones.map((asignacion) => (
                                 <div
                                   key={asignacion.id}
+                                  onClick={() => handleClick(asignacion)}
                                   className="flex items-start space-x-4 pb-4 border-b last:border-0"
                                 >
                                   <div>

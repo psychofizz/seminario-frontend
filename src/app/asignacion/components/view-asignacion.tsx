@@ -15,19 +15,29 @@ import Sidebar from "@/components/sidebar";
 import { Card, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
 
-export default function ViewAsignacion() {
-  const courseId = 2;
-  const assignmentId = 2;
+interface ViewAsignacionProps {
+  assignmentId: string;
+}
+
+export default function ViewAsignacion({ assignmentId }: ViewAsignacionProps) {
+  const courseId = 1;
+  const numericAssignmentId = parseInt(assignmentId, 10);
   const userId = 4;
+  
+    useEffect(() => {
+    }, [assignmentId, numericAssignmentId]);
+
   const { data, loading, error, refetch } = useQuery<
     GetAsignacionResponse,
     GetAsignacionesVars
   >(GET_ASIGNACION, {
-    variables: { assignmentId },
+    variables: { assignmentId:numericAssignmentId },
     fetchPolicy: "cache-and-network", // Usar caché pero actualizar en segundo plano
     nextFetchPolicy: "cache-first",
     errorPolicy: "all",
   });
+
+  console.log(data)
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -59,6 +69,7 @@ export default function ViewAsignacion() {
     variables: { userId },
     fetchPolicy: "cache-and-network",
     nextFetchPolicy: "cache-first",
+    skip: !numericAssignmentId,
   });
 
   const cursoActual = enrollmentsData?.userEnrollments?.find(

@@ -34,29 +34,20 @@ export interface Course {
     userId: number;
   }
   
-  export interface Asignaciones {
+  export interface Asignacion {
     allowsubmissionsfromdate: string;
     course: number;
     duedate: string;
     grade: number;
     id: number;
+    section: number;
     intro: string;
     name: string;
     timemodified: string;
   }
 
   export interface CursoAsignacionResponse {
-    assignments: {
-      allowsubmissionsfromdate: string;
-      course: number;
-      section: number;
-      duedate: string;
-      grade: number;
-      id: number;
-      intro: string;
-      name: string;
-      timemodified: string;
-    }[];
+    assignments: Asignacion[];
   }
   
   export interface CursoAsignacionesVars {

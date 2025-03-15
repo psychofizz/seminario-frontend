@@ -28,7 +28,7 @@ export default function MainContent() {
 
   const handleCardClick = (curso: Enrollment) => {
     startTransition(() => {
-      router.push(`/cursos/${curso.id}`);
+      router.push(`/cursos/${curso.courseid}`);
     });
   };
 
