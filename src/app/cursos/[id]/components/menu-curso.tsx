@@ -108,7 +108,7 @@ export default function MenuCurso({ courseId }: MenuCursoProps) {
     <>
       <div className="w-4/5 p-8">
         <div className="pb-10 max-w-max" id="navegacion">
-          <Navegacion />
+          <Navegacion courseName={cursoActual?.fullname}/>
         </div>
         <div className="pb-10">
           <h1 className="text-4xl font-bold">
@@ -204,7 +204,7 @@ export default function MenuCurso({ courseId }: MenuCursoProps) {
                                 <div
                                   key={asignacion.id}
                                   onClick={() => handleClick(asignacion)}
-                                  className="flex items-start space-x-4 pb-4 border-b last:border-0"
+                                  className="flex items-start space-x-4 pb-4 border-b last:border-0 cursor-pointer"
                                 >
                                   <div>
                                     <p className="font-medium">

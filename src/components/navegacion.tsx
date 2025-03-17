@@ -2,7 +2,7 @@ import React from 'react'
 import { Tabs, TabsList, TabsTrigger } from './ui/tabs'
 import Link from 'next/link'
 
-export default function Navegacion() {
+export default function Navegacion({ courseName }: {courseName: string | undefined}) {
   return (
     <div>
         <div className="md:col-span-9">
@@ -15,7 +15,7 @@ export default function Navegacion() {
                   Mis Cursos
                 </TabsTrigger>
                 <TabsTrigger value="curso" className="flex items-center">
-                  <Link className="hover:underline" href="/cursos">Curso</Link>
+                  <Link className="hover:underline" href="/cursos/id">{courseName}</Link>
                 </TabsTrigger>
                 <TabsTrigger value="unidad1" className="flex items-center">
                   <Link className="hover:underline" href="/unidad1">Unidad 1</Link>

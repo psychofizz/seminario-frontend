@@ -14,30 +14,31 @@ import Navbar from "@/components/navbar";
 import Sidebar from "@/components/sidebar";
 import { Card, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
+import { useRouter, useSearchParams  } from "next/navigation";
+import AsigSubmission from "./asig-submission";
 
 interface ViewAsignacionProps {
   assignmentId: string;
 }
 
 export default function ViewAsignacion({ assignmentId }: ViewAsignacionProps) {
-  const courseId = 1;
   const numericAssignmentId = parseInt(assignmentId, 10);
   const userId = 4;
-  
-    useEffect(() => {
-    }, [assignmentId, numericAssignmentId]);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const accion = searchParams.get("accion"); 
+
+  useEffect(() => {}, [assignmentId, numericAssignmentId]);
 
   const { data, loading, error, refetch } = useQuery<
     GetAsignacionResponse,
     GetAsignacionesVars
   >(GET_ASIGNACION, {
-    variables: { assignmentId:numericAssignmentId },
+    variables: { assignmentId: numericAssignmentId },
     fetchPolicy: "cache-and-network", // Usar caché pero actualizar en segundo plano
     nextFetchPolicy: "cache-first",
     errorPolicy: "all",
   });
-
-  console.log(data)
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -58,7 +59,6 @@ export default function ViewAsignacion({ assignmentId }: ViewAsignacionProps) {
   useEffect(() => {
     // Log solo en desarrollo
     if (process.env.NODE_ENV === "development") {
-      console.log("Datos obtenidos:", data);
     }
   }, [data]);
 
@@ -73,8 +73,16 @@ export default function ViewAsignacion({ assignmentId }: ViewAsignacionProps) {
   });
 
   const cursoActual = enrollmentsData?.userEnrollments?.find(
-    (enrollment) => enrollment.courseid === courseId
+    (enrollment) => enrollment.courseid === data?.assignment.course
   )?.course;
+
+  const handleAddSubmission = () => {
+    router.push(`/asignacion/${numericAssignmentId}?accion=editarEntrega`);
+  };
+
+  if (accion === "editarEntrega") {
+    return <AsigSubmission assignmentId={assignmentId} />; // Renderizar el componente de edición
+  }
 
   return (
     <div className="min-h-screen w-full overflow-x-hidden">
@@ -87,7 +95,7 @@ export default function ViewAsignacion({ assignmentId }: ViewAsignacionProps) {
           }`}
         >
           <div className="pb-10 max-w-max" id="navegacion">
-            <Navegacion />
+            <Navegacion courseName={cursoActual?.fullname}/>
           </div>
           <div className="pb-4">
             <h1 className="text-5xl font-bold font-sans">
@@ -176,7 +184,13 @@ export default function ViewAsignacion({ assignmentId }: ViewAsignacionProps) {
                   </Card>
                 </div>
                 <div className="flex justify-center items-center">
-                  <Button variant="outline" className="hover:cursor-pointer hover:shadow-gray-600 hover:z-20">Agregar entrega</Button>
+                  <Button
+                    variant="outline"
+                    className="hover:cursor-pointer hover:shadow-gray-600 hover:z-20"
+                    onClick={handleAddSubmission}
+                  >
+                    Agregar entrega
+                  </Button>
                 </div>
               </div>
             )}
