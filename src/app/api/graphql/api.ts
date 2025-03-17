@@ -1,5 +1,5 @@
 // api.ts
-import { CursoAsignacionesVars, CursoAsignacionResponse, CursoSeccionesResponse, CursoSeccionesVars, GetAsignacionesVars, GetAsignacionResponse, UserEnrollmentsResponse, UserEnrollmentsVars } from '@/app/types';
+import { AsignacionesProxResponse, CursoAsignacionesVars, CursoAsignacionResponse, CursoAsigProxResponse, CursoSeccionesResponse, CursoSeccionesVars, GetAsignacionesVars, GetAsignacionResponse, GetCursoAsignacionesVars, UserEnrollmentsResponse, UserEnrollmentsVars } from '@/app/types';
 // import { ApolloClient, InMemoryCache, gql } from '@apollo/client';
 
 // // Configura el cliente de Apollo con la URL de tu backend GraphQL
@@ -225,6 +225,66 @@ export const getAsignacion = async (assignmentId: number) => {
     return data.assignment;
   } catch (error) {
     console.error('Error fetching user enrollments:', error);
+    throw error;
+  }
+};
+
+
+export const GET_ASIGNACIONES_PROXIMAS = gql`
+  query GetAssignmentsProx {
+    AllAssigmentsProx {
+      allowsubmissionsfromdate
+      course
+      duedate
+      grade
+      id
+      intro
+      name
+      timemodified
+    }
+  }
+`;
+
+export const AsignacionesProximas = async () => {
+  try {
+    const { data } = await client.query<AsignacionesProxResponse>({
+      query: GET_ASIGNACIONES_PROXIMAS,
+      // variables: { },
+      fetchPolicy: 'network-only', // Para obtener datos actualizados
+    });
+    return data.AllAssigmentsProx;
+  } catch (error) {
+    console.error('Error al cargar las asignaciones:', error);
+    throw error;
+  }
+};
+
+
+export const CURSO_ASIGNACIONES_PROXIMAS = gql`
+  query CursoAssignment($courseId: Int!) {
+    CourseAssignmentsProx(courseId: $courseId) {
+      allowsubmissionsfromdate
+      course
+      duedate
+      grade
+      id
+      intro
+      name
+      timemodified
+    }
+  }
+`;
+
+export const CursoAsignaciones = async (courseId: number) => {
+  try {
+    const { data } = await client.query<CursoAsigProxResponse, GetCursoAsignacionesVars>({
+      query: CURSO_ASIGNACIONES_PROXIMAS,
+      variables: { courseId },
+      fetchPolicy: 'network-only', // Para obtener datos actualizados
+    });
+    return data.CourseAssignmentsProx;
+  } catch (error) {
+    console.error('Error al cargar las asignaciones del curso:', error);
     throw error;
   }
 };

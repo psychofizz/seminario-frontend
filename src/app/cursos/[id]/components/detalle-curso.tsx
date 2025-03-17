@@ -27,7 +27,7 @@ export function DetalleCursoCLient({ courseId }: DetalleCursoProps) {
         }`}
       >
         <MenuCurso courseId={courseId}/>
-        <ActividadesProximas/>
+        <ActividadesProximas courseId={courseId}/>
       </main>
       </div>
         

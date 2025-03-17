@@ -33,7 +33,7 @@ export default function MenuCurso({ courseId }: MenuCursoProps) {
   // const params = useParams();
   const numericCourseId = parseInt(courseId, 10);
   const userId = 4;
-  const [activeTab, setActiveTab] = useState<string>("inicio");
+  const [activeTab, setActiveTab] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -100,6 +100,16 @@ export default function MenuCurso({ courseId }: MenuCursoProps) {
       }
     };
 
+    useEffect(() => {
+      if (seccionesData?.courseSections.length) {
+        setActiveTab(`seccion-${seccionesData.courseSections[0].id}`);
+      }
+    }, [seccionesData]);
+  
+    if (!activeTab) {
+      return <div className="w-4/5 p-8">Cargando...</div>;
+    }
+
     if (!courseId) {
       return <div className="w-4/5 p-8">Cargando...</div>;
     }  
@@ -119,7 +129,7 @@ export default function MenuCurso({ courseId }: MenuCursoProps) {
         <div className="" id="main">
           <div className="md:col-span-9">
             <Tabs
-              defaultValue="inicio"
+              defaultValue= {activeTab}
               className="w-full"
               onValueChange={handleTabChange}
             >

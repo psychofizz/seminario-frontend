@@ -74,19 +74,21 @@ export interface Course {
   } 
 
   export interface GetAsignacionResponse {
-    assignment: {
-      allowsubmissionsfromdate: string;
-      course: number;
-      section: number;
-      duedate: string;
-      grade: number;
-      id: number;
-      intro: string;
-      name: string;
-      timemodified: string;
-    }; 
+    assignment: Asignacion
   }
   
   export interface GetAsignacionesVars {
     assignmentId: number;
+  }
+
+  export interface GetCursoAsignacionesVars {
+    courseId: number;
+  }
+
+  export interface CursoAsigProxResponse {
+    CourseAssignmentsProx: Asignacion[];
+  }
+
+  export interface AsignacionesProxResponse {
+    AllAssigmentsProx: Asignacion[];
   }
