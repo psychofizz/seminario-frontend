@@ -219,7 +219,7 @@ function CourseCard({ enrollment, formatDate, getTimeRemaining }: CourseCardProp
       </CardContent>
       
       <CardFooter>
-        <Button className="w-full" variant={isCompleted ? "outline" : "default"}>
+        <Button className="w-full" variant={isCompleted ? "blueprimary" : "blueprimary"}>
           <BookOpen className="mr-2 h-4 w-4" />
           {isCompleted ? 'Ver certificado' : 'Ir al curso'}
         </Button>

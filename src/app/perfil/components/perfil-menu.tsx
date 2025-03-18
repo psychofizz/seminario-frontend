@@ -4,12 +4,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GraduationCap, Calendar } from "lucide-react";
 import Image from "next/image";
-import CoursesUser from "@/app/cursos/components/course";
+// import CoursesUser from "@/app/cursos/components/course";
 import { Enrollment, UserEnrollmentsVars } from "@/app/types";
 import { GET_USER_ENROLLMENTS } from "@/app/api/graphql/api";
 import { useQuery } from "@apollo/client";
 import { useRouter } from "next/navigation";
 import { startTransition } from "react";
+import StudentCourses from "@/app/cursos/components/student-courses";
 // import { usePathname } from "next/navigation";
 
 export default function MainContent() {
@@ -37,7 +38,7 @@ export default function MainContent() {
 
   return (
     <main className="container mx-auto px-10 py-6">
-      <div className="">
+      <div className="pb-10">
         <div className="md:col-span-9">
           <Tabs defaultValue="cursos" className="w-full">
             <TabsList className="w-full justify-start">
@@ -100,7 +101,7 @@ export default function MainContent() {
           </Tabs>
         </div>
       </div>
-      <CoursesUser />
+      <StudentCourses userId={userId} />
     </main>
   );
 }
